@@ -2,28 +2,26 @@ require 'active_interaction'
 
 class Withdraw < ActiveInteraction::Base
   integer :amount
-  hash :bank do
-    integer :'50'
-    integer :'25'
-    integer :'10'
-    integer :'5'
-    integer :'2'
-    integer :'1'
-  end
 
   def execute
-    _set_useful_bank
+    _set_bank
     _find_simple_result
     _find_complicated_result unless _check_result @result
-    _check_result(@result) ? @result : nil
+    if _check_result @result
+       _reduce_banknotes_quantity
+       _create_transaction
+       @result
+    else
+       nil
+    end
   end
 
 private
 
-  def _set_useful_bank
-    @useful_bank = {}
-    bank.map{ |key,value| @useful_bank[key.to_i] = value }
-    @useful_bank = @useful_bank.reject{ |banknote, count| count.zero? or banknote > amount }
+  def _set_bank
+    @bank = {}
+    Banknote.kinds.map{ |key,value| @bank[value] = Banknote.public_send(key).take.quantity }
+    @bank = @bank.reject{ |banknote, count| count.zero? or banknote > amount }
   end
 
   def _check_result result
@@ -47,16 +45,27 @@ private
     end
      _greedy_algorithm amount, bank, result
   end
+
   def _find_complicated_result
-    (1 .. @useful_bank.keys.length - 1).each do |num|
-      @useful_bank.keys.combination(num).to_a.each do |combination|
-        result = _modified_greedy_algorithm amount, @useful_bank, combination
-        @result = result if _check_result result
+    (1 .. @bank.keys.length - 1).each do |num|
+      @bank.keys.combination(num).to_a.each do |combination|
+        temporary_result = _modified_greedy_algorithm amount, @bank, combination
+        @result = temporary_result if _check_result temporary_result
       end
       break if _check_result @result
     end
   end
+
   def _find_simple_result
-    @result = _greedy_algorithm amount, @useful_bank
+    @result = _greedy_algorithm amount, @bank
   end
+
+  def _reduce_banknotes_quantity
+    @result.map{ |key,value| Banknote.find_by_kind(key).update quantity: value }
+  end
+
+  def _create_transaction
+    Transaction.create amount: amount, banknotes: @result
+  end
+
 end

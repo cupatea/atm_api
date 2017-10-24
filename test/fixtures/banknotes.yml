@@ -1,0 +1,18 @@
+one:
+  kind: 'one'
+  quantity: 100
+two:
+  kind: 'two'
+  quantity: 100
+five:
+  kind: 'five'
+  quantity: 100
+ten:
+  kind: 'ten'
+  quantity: 100
+quarter:
+  kind: 'quarter'
+  quantity: 100
+fifty:
+  kind: 'fifty'
+  quantity: 100
