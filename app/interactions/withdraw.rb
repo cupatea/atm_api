@@ -3,6 +3,9 @@ require 'active_interaction'
 class Withdraw < ActiveInteraction::Base
   integer :amount
 
+  validates :amount,
+    numericality: { greater_than: 0, less_than: Banknote.total }
+
   def execute
     _set_bank
     _find_simple_result
@@ -10,9 +13,8 @@ class Withdraw < ActiveInteraction::Base
     if _check_result @result
        _reduce_banknotes_quantity
        _create_transaction
-       @result
     else
-       nil
+      errors.add(:result, :lack_of_banknotes )
     end
   end
 
@@ -61,11 +63,14 @@ private
   end
 
   def _reduce_banknotes_quantity
-    @result.map{ |key,value| Banknote.find_by_kind(key).update quantity: value }
+    @result.map do |key,value|
+      banknote = Banknote.find_by_kind(key)
+      banknote.update quantity: banknote.quantity - value
+    end
   end
 
   def _create_transaction
-    Transaction.create amount: amount, banknotes: @result
+    Transaction.create kind: 'withdraw', amount: amount, banknotes: @result
   end
 
 end
