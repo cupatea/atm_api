@@ -5,4 +5,8 @@ en:
         withdraw:
           attributes:
             result:
-              lack_of_banknotes: "There are lack of banknotes to perform withdraw"
+              lack_of_banknotes: "is negative.There is a lack of banknotes to perform withdraw"
+        refill:
+          attributes:
+            result:
+              banknotes_must_be_present: "is negative.Banknotes must be present to perform refill"

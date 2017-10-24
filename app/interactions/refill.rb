@@ -16,7 +16,7 @@ class Refill < ActiveInteraction::Base
     if _create_transaction.valid?
        @transaction
     else
-       errors.merge! @transaction.errors
+      errors.add(:result, :banknotes_must_be_present)
     end
   end
 
@@ -25,7 +25,7 @@ private
   def _set_bank
     @bank = {}
     banknotes.map{ |key,value| @bank[key.to_i] = value }
-    @bank = @bank.reject{ |banknote, count| count.zero? }
+    @bank = @bank.reject{ |banknote, count| count < 1 }
   end
 
   def _perform_refill

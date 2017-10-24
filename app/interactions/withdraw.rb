@@ -11,10 +11,12 @@ class Withdraw < ActiveInteraction::Base
     _find_simple_result
     _find_complicated_result unless _check_result @result
     if _check_result @result
+       _prepare_result
        _reduce_banknotes_quantity
        _create_transaction
+       @result
     else
-      errors.add(:result, :lack_of_banknotes )
+      errors.add(:result, :lack_of_banknotes)
     end
   end
 
@@ -71,6 +73,10 @@ private
 
   def _create_transaction
     Transaction.create kind: 'withdraw', amount: amount, banknotes: @result
+  end
+
+  def _prepare_result
+    @result = @result.reject{ |banknote, count| count.zero? }
   end
 
 end
