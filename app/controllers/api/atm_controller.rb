@@ -1,5 +1,4 @@
 class Api::AtmController < ApplicationController
-  # respond_to :json
 
   def withdraw
     @outcome = Withdraw.run params
