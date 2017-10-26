@@ -14,7 +14,7 @@ class Refill < ActiveInteraction::Base
     _set_bank
     _perform_refill
     if _create_transaction.valid?
-       @transaction.amount
+       { banknotes: @bank, amount: @transaction.amount } 
     else
       errors.add(:result, :banknotes_must_be_present)
     end

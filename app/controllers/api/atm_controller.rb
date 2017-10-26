@@ -12,10 +12,10 @@ class Api::AtmController < ApplicationController
 
 private
   def _render_response
-    status = @outcome.valid? ? :ok : :unprocessable_entity
     render json: {
       success: @outcome.errors.blank?,
-      result:  @outcome.valid? ? @outcome.result : @outcome.errors.full_messages.to_sentence
-      }, status: status
+      result:  @outcome.valid? ? @outcome.result : nil,
+      errors:  @outcome.valid? ? nil : @outcome.errors.full_messages.to_sentence
+    }, status: @outcome.valid? ? :ok : :unprocessable_entity
   end
 end

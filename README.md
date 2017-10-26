@@ -16,34 +16,40 @@ $ rails db:create db:migrate db:seed
    ----
    To refill ATM it's needed to send a hash of banknotes and their quantities.
 
- **Method `POST`**
- **Path `/refill`**
- **Data`{ "banknotes" : { "25":100, "50":100 }}`**
+```
+$ curl -X POST \
+  http://{server.domain}/api/refill \
+  -H 'content-type: application/json' \
+  -d '{ "banknotes" : { "25":100, "50":100 }}'
+```
 
  **Success Response**
 
 * **Status:** `200 OK`
-* **Content:** `{ "success": true, "result": 7500 }`
+* **Content:** `{ "success":true, "result":{ "banknotes": { "25":100, "50":100 }, "amount":7500 } "errors":null }`
 
  **Error Response**
 
 * **Status:** `422 Unprocessable entity`
-* **Content:** `{ "success": false, "result": "Error description" }`
+* **Content:** `{ "success":false, "result":null, "errors":"Errors description" }`
 
 **Withdraw**
    ----
    To withdraw banknotes it's needed to send amount value.
 
-**Method `POST`**
-**Path `/withdraw`**
-**Data`{"amount" : 115 }`**
+```
+$ curl -X POST \
+  http://{server.domain}/api/withdraw \
+  -H 'content-type: application/json' \
+  -d '{ "amount" : 115 }'
+```
 
  **Success Response**
 
 * **Status:** `200 OK`
-* **Content:** `{ "success": true, "result": { "5": 1, "10": 1, "50": 2" }`
+* **Content:** `{ "success":true, "result":{ "5":1, "10":1, "50":2 }, "errors": null }`
 
  **Error Response:**
 
 * **Status:** `422 Unprocessable entity`
-* **Content:** `{ "success": false, "result": "Error description" }`
+* **Content:** `{ "success":false, "result":null, "errors":"Errors description" }`
