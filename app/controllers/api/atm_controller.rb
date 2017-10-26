@@ -15,7 +15,7 @@ private
   def _render_response
     status = @outcome.valid? ? :ok : :unprocessable_entity
     render json: {
-      success: @outcome.valid?,
+      success: @outcome.errors.blank?,
       result:  @outcome.valid? ? @outcome.result : @outcome.errors.full_messages.to_sentence
       }, status: status
   end
