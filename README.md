@@ -1,24 +1,49 @@
-# README
+# ATM API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This API allows to refill and withdraw banknotes with following denomination 1, 2, 5, 10, 25, 50.
+## Getting started
+At to start follow the next steps:
 
-Things you may want to cover:
+```
+$ bundle install
+```
 
-* Ruby version
+```
+$ rails db:create db:migrate db:seed
+```
 
-* System dependencies
+**Refill**
+   ----
+   To refill ATM it's needed to send hash of banknotes and their quantities.
 
-* Configuration
+ **Method `POST`**
+ **Path `/refill`**
+ **Data`{"banknotes" : {"25":"100","50":"100"}}`**
 
-* Database creation
+ **Success Response**
 
-* Database initialization
+* **Status:** `200 OK`
+* **Content:** `{success: true, result: "Result" }`
 
-* How to run the test suite
+ **Error Response**
 
-* Services (job queues, cache servers, search engines, etc.)
+* **Status:** `422 Unprocessable entity`
+* **Content:** `{ success: false, result: "Error description" }`
 
-* Deployment instructions
+**Withdraw**
+   ----
+   To withdraw banknotes it's needed to send amount value.
 
-* ...
+**Method `POST`**
+**Path `/withdraw`**
+**Data`{"amount" : "115"}`**
+
+ **Success Response**
+
+* **Status:** `200 OK`
+* **Content:** `{success: true, result: "Result" }`
+
+ **Error Response:**
+
+* **Status:** `422 Unprocessable entity`
+* **Content:** `{ success: false, result: "Error description" }`
